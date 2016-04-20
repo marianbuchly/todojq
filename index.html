@@ -95,10 +95,12 @@
       </li>
     </ul>
     <div class="footer">
-      Todo: <span id="todo-count">1</span> •
-      Done: <span id="completed-count">0</span> •
-      Total: <span id="total-count">1</span>
-    </div>
+  Todo: <span id="todo-count">1</span> •
+  Done: <span id="completed-count">0</span> •
+  Total: <span id="total-count">1</span> •
+
+  <a href="#" id="clean-up">Clean up</a>
+</div>
   </div>
 
   <script>
@@ -122,8 +124,51 @@
     updateCounters();
   }
 
+  function submitTodo(event){
+    event.preventDefault();
+     var title = $("#new-todo").val()
+
+     createTodo(title);
+
+     $("#new-todo").val(null)
+     updateCounters();
+  }
+
+  function createTodo(title) {
+    var checkboxId = "todo-" + nextTodoId();
+
+    var newTodo = $("<li></li>")
+      .addClass("todo")
+      .append($('<input>')
+        .attr('type','checkbox')
+        .attr('id', checkboxId)
+        .val(1)
+        .bind('change', toggleDone)
+      ).append(
+        document.createTextNode(" ")
+      ).append($('<label></label>')
+      .attr('for', checkboxId)
+      .html(title)
+    );
+    $("#todolist").append( newTodo );
+
+    updateCounters();
+  }
+
+  function nextTodoId() {
+  return $(".todo").length + 1;
+}
+
+function cleanUpDoneTodos(event){
+  event.preventDefault();
+  $.when($(".completed").remove())
+  .then(updateCounters);
+}
+
   $("input[type=checkbox]").bind('change', toggleDone);
-  
+  $("form").bind('submit', submitTodo);
+  $("#clean-up").bind ('click', cleanUpDoneTodos);
+
   </script>
 </body>
 </html>
